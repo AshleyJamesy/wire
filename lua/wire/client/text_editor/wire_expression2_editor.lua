@@ -557,6 +557,11 @@ function Editor:CreateTab(chosenfile)
 				self:SetActiveTab(pnl)
 				self:SaveFile(self:GetChosenFile(), false, true)
 			end)
+			menu:AddOption("Minify", function()
+				self:FixTabFadeTime()
+				self:SetActiveTab(pnl)
+				self:Minify()
+			end)
 			menu:AddOption("Reload", function()
 				self:FixTabFadeTime()
 				local old = self:GetLastTab()
@@ -1696,6 +1701,16 @@ function Editor:SetValidateData(compiler)
 
 	editor.e2fs_methods = allkeys
 	editor.e2_functionsig_lookup = function_sigs
+end
+
+function Editor:Minify()
+	if self.EditorType == "E2" then
+		local code = E2Lib.Minify(self:GetCode())
+		if code ~= "" then
+			self:NewTab()
+			self:SetCode(code)
+		end
+	end
 end
 
 function Editor:Validate(gotoerror)
